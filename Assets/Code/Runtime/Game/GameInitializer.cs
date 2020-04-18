@@ -8,9 +8,11 @@ public class GameInitializer : MonoBehaviour {
 
   public static GameInitializer Instance { get; private set; }
 
-  public Dictionary<int, UnitManager> managers;
-  public GameObject playerPrefab;
-  public GameObject bulletPrefab;
+    public Dictionary<int, UnitManager> managers;
+    public GameObject playerPrefab;
+    public GameObject bulletPrefab;
+
+    public CameraFollow camFollow;
 
   private void Awake() {
     Instance = this;
@@ -61,14 +63,21 @@ public class GameInitializer : MonoBehaviour {
     return manager;
   }
 
-  public void ModifyLocalManager(UnitManager manager){
-    UnitManager.Local = manager;
+    // KEVIN: This is called when my player enters gameplay
+    public void ModifyLocalManager(UnitManager manager)
+	{
+		
+		UnitManager.Local = manager;
 
-    var entity = PlayerEntity.CreateEntity();
-    manager.Register(entity);
-  }
+        // Create and register EntityUnits
+		var playerEntity = PlayerEntity.CreateEntity();
+		manager.Register(playerEntity);
 
-  private void AddUnitManager(int actor, UnitManager manager){
+        // Link local objects to the local player entity (my player)
+        camFollow.target = playerEntity.transform;
+	}
+
+	private void AddUnitManager(int actor, UnitManager manager){
     managers.Add(actor, manager);
   }
 
