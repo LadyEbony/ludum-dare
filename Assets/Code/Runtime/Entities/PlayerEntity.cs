@@ -26,7 +26,7 @@ public class PlayerEntity : EntityUnit
 
 	public static PlayerEntity CreateEntity()
 	{
-		GameObject obj = Instantiate(GameInitializer.Instance.playerPrefab);
+		GameObject obj = Instantiate(GameInitializer.Instance.playerPrefab, WorldParent.instance.transform);
 		PlayerEntity entity = obj.GetComponent<PlayerEntity>();
 
 		return entity;

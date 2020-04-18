@@ -6,7 +6,7 @@ using UnityEngine;
 public class BulletEntity : EntityUnit {
 
   public static BulletEntity CreateEntity(){
-    var obj = Instantiate(GameInitializer.Instance.bulletPrefab);
+    var obj = Instantiate(GameInitializer.Instance.bulletPrefab, WorldParent.instance.transform);
     var entity = obj.GetComponent<BulletEntity>();
     return entity;
   }
