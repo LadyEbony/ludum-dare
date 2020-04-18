@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PlayerEntity : EntityUnit
 {
@@ -14,6 +15,7 @@ public class PlayerEntity : EntityUnit
 
 	[Header("Gameplay")]
 	public float speed = 5f;
+	private NavMeshAgent agent;
 
 	[Header("Network")]
 	public float prevNetworkTime;
@@ -26,6 +28,7 @@ public class PlayerEntity : EntityUnit
 	{
 		GameObject obj = Instantiate(GameInitializer.Instance.playerPrefab);
 		PlayerEntity entity = obj.GetComponent<PlayerEntity>();
+
 		return entity;
 	}
 
@@ -34,6 +37,13 @@ public class PlayerEntity : EntityUnit
 		base.StartEntity();
 
 		UnitManager.Local.players.Add(authorityID, this);
+
+		agent = GetComponent<NavMeshAgent>();
+
+		if(!isMine)
+		{
+			transform.position = nextPos;
+		}
 	}
 
 	public override void UpdateEntity()
@@ -45,8 +55,9 @@ public class PlayerEntity : EntityUnit
 			// movement
 			float hor = Input.GetAxisRaw("Horizontal");
 			float ver = Input.GetAxisRaw("Vertical");
-
-			transform.position += new Vector3(hor, 0f, ver) * Time.deltaTime * speed;
+			Vector3 direction = Vector3.ClampMagnitude(new Vector3(hor, 0, ver), 1);
+			Vector3 velocity = direction * speed;
+			agent.Move(velocity * Time.deltaTime);
 
 			// gun
 			if (Input.GetMouseButton(0))
@@ -69,7 +80,7 @@ public class PlayerEntity : EntityUnit
 			float lerpNetwork = Time.time - prevNetworkTime;
 			Vector3 extraPos = Vector3.Lerp(prevPos, nextPos, lerpNetwork / updateTimer);
 
-			transform.position = Vector3.SmoothDamp(transform.position, extraPos, ref dampVector, Time.deltaTime * 2f);
+			agent.SetDestination(Vector3.SmoothDamp(transform.position, extraPos, ref dampVector, Time.deltaTime * 2f));
 		}
 	}
 
