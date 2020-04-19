@@ -6,6 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/PlayerMovement.unity
-    guid: e430007879435dd4a8ac073366611685
+    path: Assets/Scenes/WorldScaling.unity
+    guid: c4183803f184f5d449cbdc42715dd842
   m_configObjects: {}

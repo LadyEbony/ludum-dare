@@ -71,6 +71,9 @@ public class BulletEntity : EntityUnit
 	// TODO: THIS IS LOCAL STUFF. PLEASE NETWORK!!!!
 	private void OnCollisionEnter(Collision collision)
 	{
+		if (!isMine)
+			return;
+
 		IDamageable damageable = collision.gameObject.GetComponent<IDamageable>();
 		if(damageable != null)
 		{
