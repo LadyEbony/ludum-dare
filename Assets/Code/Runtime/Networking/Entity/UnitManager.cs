@@ -17,6 +17,18 @@ public class UnitManager : EntityBase, IMasterOwnsUnclaimed {
   public GameObject platePrefab;
 
   public static UnitManager Local { get; set; }
+  public static PlayerEntity LocalPlayer {
+    get {
+      if (!Local) return null;
+
+      var localID = Local.authorityID;
+      PlayerEntity player;
+      if (Local.players.TryGetValue(localID, out player)){
+        return player;
+      }
+      return null;
+    }
+  }
 
   public static Dictionary<System.Type, int> typeConversion;
   public static Dictionary<int, MethodInfo> createConversion;

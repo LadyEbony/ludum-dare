@@ -13,10 +13,23 @@ public class PlayerEntity : EntityUnit
 		players = new Dictionary<int, PlayerEntity>();
 	}
 
-	[Header("Gameplay")]
-	public float speed = 5f;
-	private NavMeshAgent agent;
+	[Header("Gameplay Movement")]
+  public float movementSpeed = 10f;
+  private NavMeshAgent agent;
 
+  [Header("Gameplay Gun")]
+  public int ammo = 30;
+  public int ammoMax = 30;
+  public float fireRate = 60f;
+  public float reload = 1f;
+  public float projectileSpeed = 10f;
+  public float projectileDeviation = 2f;
+
+  public event System.Action<PlayerEntity> onBullet;
+
+  private float nextAmmoReady;
+  private float nextReadyReady;
+	
 	[Header("Network")]
 	public float prevNetworkTime;
 
@@ -56,23 +69,10 @@ public class PlayerEntity : EntityUnit
 			float hor = Input.GetAxisRaw("Horizontal");
 			float ver = Input.GetAxisRaw("Vertical");
 			Vector3 direction = Vector3.ClampMagnitude(new Vector3(hor, 0, ver), 1);
-			Vector3 velocity = direction * speed;
+			Vector3 velocity = direction * movementSpeed;
 			agent.Move(velocity * Time.deltaTime);
 
-			// gun
-			if (Input.GetMouseButton(0))
-			{
-				BulletEntity bullet = BulletEntity.CreateEntity();
-
-				Vector3 playersp = Camera.main.WorldToScreenPoint(transform.position);
-				Vector3 camerasp = Input.mousePosition;
-				Vector3 dir = (camerasp - playersp).normalized;
-
-				bullet.destination = dir * 10f;
-
-				UnitManager.Local.Register(bullet);
-
-			}
+			HandleGun();
 		}
 		else
 		{
@@ -83,6 +83,41 @@ public class PlayerEntity : EntityUnit
 			agent.SetDestination(Vector3.SmoothDamp(transform.position, extraPos, ref dampVector, Time.deltaTime * 2f));
 		}
 	}
+
+  private void HandleGun(){
+    if (Input.GetMouseButton(0) && ammo > 0 && Time.time >= nextAmmoReady){
+      CreateBullet();
+
+      onBullet?.Invoke(this);
+
+      ammo -= 1;
+      nextAmmoReady = Time.time + 1 / fireRate;
+
+      if (ammo == 0){
+        nextReadyReady = Time.time + reload;
+      }
+    }
+
+    if (ammo == 0 && Time.time > nextReadyReady){
+      ammo = ammoMax;
+    }
+  }
+
+  public void CreateBullet(){
+    BulletEntity bullet = BulletEntity.CreateEntity();
+
+    var playerPosition = transform.position;
+    var cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+    var tRay = (playerPosition.y - cameraRay.origin.y) / cameraRay.direction.y;
+    var cameraPosition = cameraRay.origin + tRay * cameraRay.direction;
+
+    var dir = Quaternion.AngleAxis(Random.Range(-projectileDeviation, projectileDeviation), Vector3.up) * (cameraPosition - playerPosition).normalized;
+
+		UnitManager.Local.Register(bullet);
+
+    bullet.destination = bullet.transform.position + dir * 10f;
+    bullet.speed = projectileSpeed;
+  }
 
 	public override void DestroyEntity()
 	{

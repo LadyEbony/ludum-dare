@@ -43,6 +43,7 @@ public class BulletEntity : EntityUnit {
     base.Serialize(h);
 
     h.Add('d', destination);
+    h.Add('s', speed);
   }
 
   public override void Deserialize(ExitGames.Client.Photon.Hashtable h) {
@@ -51,6 +52,7 @@ public class BulletEntity : EntityUnit {
     object val;
     if (h.TryGetValue('d', out val)){
       destination = (Vector3)val;
+      speed = (float)speed;
     }
   }
 }

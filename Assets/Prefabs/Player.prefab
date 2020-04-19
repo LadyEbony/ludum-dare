@@ -149,7 +149,12 @@ MonoBehaviour:
   entityID: 0
   authorityID: 0
   updateTimer: 0.05
-  speed: 5
+  movementSpeed: 10
+  ammo: 30
+  ammoMax: 30
+  fireRate: 30
+  reload: 1
+  projectileSpeed: 10
   prevNetworkTime: 0
   prevPos: {x: 0, y: 0, z: 0}
   nextPos: {x: 0, y: 0, z: 0}
