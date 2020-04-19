@@ -15,7 +15,8 @@ public class PlayerEntity : EntityUnit
 
 	[Header("Gameplay")]
 	public float speed = 5f;
-	private NavMeshAgent agent;
+	public NavMeshAgent agent;
+	private Camera cam;
 
 	[Header("Network")]
 	public float prevNetworkTime;
@@ -64,11 +65,14 @@ public class PlayerEntity : EntityUnit
 			{
 				BulletEntity bullet = BulletEntity.CreateEntity();
 
-				Vector3 playersp = Camera.main.WorldToScreenPoint(transform.position);
-				Vector3 camerasp = Input.mousePosition;
-				Vector3 dir = (camerasp - playersp).normalized;
+				//Vector3 playersp = cam.WorldToScreenPoint(transform.position);
+				//Vector3 camerasp = Input.mousePosition;
+				//Vector3 dir = (camerasp - playersp).normalized;
+				Vector3 playerXZPos = new Vector3(transform.position.x, 0, transform.position.z);
+				Vector3 cursorXZPos = ScreenToXZPoint(Input.mousePosition, transform.position.y);
+				Vector3 dir = (cursorXZPos - playerXZPos).normalized;
 
-				bullet.destination = dir * 10f;
+				bullet.destination = transform.position + dir * 10f;
 
 				UnitManager.Local.Register(bullet);
 
@@ -112,6 +116,28 @@ public class PlayerEntity : EntityUnit
 			nextPos = (Vector3)val;
 		}
 
+	}
+
+	private void Start()
+	{
+		cam = Camera.main;
+	}
+
+	private Vector3 ScreenToXZPoint (Vector3 screenPos, float y = 0)
+	{
+		// Assumes the camera is ONLY rotated around the x-axis
+		Vector3 worldCamPos = cam.ScreenToWorldPoint(screenPos);
+		Vector3 groundPos = new Vector3(worldCamPos.x, 0, worldCamPos.z - (worldCamPos.y - y) / Mathf.Tan(-cam.transform.eulerAngles.x * Mathf.Deg2Rad));
+		return groundPos;
+	}
+
+	private void OnDrawGizmos()
+	{
+		Vector3 playerXZPos = new Vector3(transform.position.x, 0, transform.position.z);
+		Vector3 cursorXZPos = ScreenToXZPoint(Input.mousePosition, transform.position.y);
+		Debug.DrawLine(playerXZPos, cursorXZPos, Color.green);
+		Vector3 dir = (cursorXZPos - playerXZPos).normalized;
+		Debug.DrawRay(transform.position, dir * 10, Color.red);
 	}
 
 }
