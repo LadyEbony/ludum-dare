@@ -10,6 +10,7 @@ public class GameInitializer : MonoBehaviour {
 
     public Dictionary<int, UnitManager> managers;
     public GameObject playerPrefab;
+    public GameObject aiPrefab;
     public GameObject bulletPrefab;
 
     public CameraFollow camFollow;
@@ -41,7 +42,8 @@ public class GameInitializer : MonoBehaviour {
         var manager = CreateManager(id);
 
         AddUnitManager(id, manager);
-        if (player == PlayerProperties.localPlayer) ModifyLocalManager(manager);
+        if (player.IsLocal) ModifyLocalManager(manager);
+        if (player.IsMasterClient) ModifyServerManager(manager);
       }
 
     } else {
@@ -61,6 +63,11 @@ public class GameInitializer : MonoBehaviour {
     manager.Register();
 
     return manager;
+  }
+
+  public void ModifyServerManager(UnitManager manager){
+    var ai = AIEntity.CreateEntity();
+    manager.Register(ai);
   }
 
     // KEVIN: This is called when my player enters gameplay

@@ -89,9 +89,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1820055397823621441}
   - component: {fileID: 1550806326850365294}
-  - component: {fileID: 1820055397823621440}
+  - component: {fileID: 4331965413151066374}
   m_Layer: 0
-  m_Name: Player
+  m_Name: AI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -134,7 +134,7 @@ NavMeshAgent:
   m_BaseOffset: 0.91
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &1820055397823621440
+--- !u!114 &4331965413151066374
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -143,24 +143,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 1820055397823621443}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec686f8f738805e45ae1815d68670469, type: 3}
+  m_Script: {fileID: 11500000, guid: d5f27d2065d989f4fb91eef7d6897aef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   entityID: 0
   authorityID: 0
-  updateTimer: 0.05
+  updateTimer: 0.1
   health: 10
   movementSpeed: 10
   agent: {fileID: 0}
   desyncTimer: 0
   input: {x: 0, y: 0}
   netPosition: {x: 0, y: 0, z: 0}
-  ammo: 30
-  ammoMax: 30
-  fireRate: 30
-  reload: 1
-  projectileSpeed: 10
-  projectileDeviation: 2
+  target: {fileID: 0}
 --- !u!1 &1820055397866861089
 GameObject:
   m_ObjectHideFlags: 0

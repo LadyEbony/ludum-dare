@@ -52,7 +52,10 @@ public class BulletEntity : EntityUnit {
     object val;
     if (h.TryGetValue('d', out val)){
       destination = (Vector3)val;
-      speed = (float)speed;
+    }
+
+    if (h.TryGetValue('s', out val)){
+      speed = (float)val;
     }
   }
 }

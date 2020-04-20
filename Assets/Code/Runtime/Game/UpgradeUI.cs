@@ -40,6 +40,7 @@ public class UpgradeUI : MonoBehaviour {
     );
 
     canvas.enabled = true;
+    transform.localEulerAngles = new Vector3(0, 0f, Random.Range(-2f, 2f));
   }
 
   public void ClearUpgrades(){
